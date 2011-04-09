@@ -42,6 +42,7 @@ boolean testMode; // activates the target-timing test
 boolean infoOn=true; //displays useful information, deactivate with "i"
 boolean collisionsFound; //used only in initializing points to prevent overlap
 
+
 void keyPressed() {
 }
 
@@ -72,22 +73,6 @@ void mousePressed(){
       numMisses++;
    }
  }
- 
- if (testMode&& regularCursor)
- {
-   if (dist(mouseX,mouseY,pointsX[currTarget],pointsY[currTarget])<diameter[currTarget]/2)
-   {
-     timeElapsed = millis()-startTime;
-     runningTotalTime += timeElapsed;
-     numHits++;
-     startTest();
-   }
-   else
-   {
-      numMisses++;
-   }
- }
- 
 }
 
 void initializePoints(x,y,d) { // x cols, y rows, diameter d
