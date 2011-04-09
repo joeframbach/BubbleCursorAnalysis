@@ -14,6 +14,9 @@ int numMisses = 0;
 int runningTotalTime = 0;
 int numClicks = 0;
 
+int rows;
+int cols;
+
 //floats and float arrays to handle position, movement, timing
 float x, y;              //old cursor position
 float cursorX, cursorY;  //cursor position
@@ -96,6 +99,8 @@ void initializePoints(x,y,d) { // x cols, y rows, diameter d
   pointsX = new float[numpoints];
   pointsY = new float[numpoints];
   diameter = new float[numpoints];
+  rows = y;
+  cols = x;
   containDistances = new float[numpoints];
   intersectDistances = new float[numpoints];
   distances = new float[numpoints];
