@@ -1,0 +1,238 @@
+/* @pjs font="data/HelveticaBold.ttf"; */
+
+PFont f;                          
+
+int numpoints=30; //number of points
+int currmin = 0; //tracks index of nearest target
+int secondmin = 0; //tracks index of second-nearest target
+int currTarget = 0; //tracks index of target to click in test mode
+int numHits=0;
+int numMisses=0;
+int runningTotalTime=0;
+
+//floats and float arrays to handle position, movement, timing
+float x, y;              //old cursor position
+float cursorX, cursorY;  //cursor position
+float[] pointsX, pointsY;
+float[] diameter;
+float[] containDistances = new float[numpoints];
+float[] intersectDistances = new float[numpoints];
+float[] distances = new float[numpoints];
+float cursorDiameter;
+float startTime=0;
+float timeElapsed=0;
+
+
+//booleans to track program mode and bubble behavior
+boolean morphed; //tracks if the bubble needs to be morphed
+boolean regularCursor; //turns off the bubble cursor entirely
+boolean testMode; // activates the target-timing test
+boolean infoOn=true; //displays useful information, deactivate with "i"
+boolean collisionsFound; //used only in initializing points to prevent overlap
+
+void keyPressed() {
+  if (key == 'c') {
+    regularCursor =! regularCursor;
+  } 
+  else if (key == 't') 
+  {
+    testMode = !testMode;
+    numHits=0;
+    numMisses=0;
+    runningTotalTime=0;
+    startTest();
+  }
+  else if (key == 'i'){
+    infoOn=!infoOn;
+  }
+  else if (key == 'r')
+  {
+    setup();
+  }
+
+}
+
+void startTest(){
+  startTime = millis();
+  int oldTarget = currTarget;
+  while (currTarget == oldTarget){
+    currTarget = floor(random(0,numpoints));  
+  }
+}
+
+
+void mousePressed(){
+ if (testMode&& !regularCursor)
+ {
+   if (currmin==currTarget)
+   {
+     timeElapsed = millis()-startTime;
+     runningTotalTime += timeElapsed;
+     numHits++;
+     startTest();
+   }
+   else
+   {
+      numMisses++;
+   }
+ }
+ 
+ if (testMode&& regularCursor)
+ {
+   if (dist(mouseX,mouseY,pointsX[currTarget],pointsY[currTarget])<diameter[currTarget]/2)
+   {
+     timeElapsed = millis()-startTime;
+     runningTotalTime += timeElapsed;
+     numHits++;
+     startTest();
+   }
+   else
+   {
+      numMisses++;
+   }
+ }
+ 
+}
+
+void initializePoints(){
+  for (int i =0;i<numpoints;i++){     
+        pointsX[i]= random(240,960);
+        pointsY[i]= random(40,760);
+        diameter[i]= random(10,60);
+      }
+  collisionsFound=false;
+  for (int i=0;i<numpoints;i++){
+     for (int j=0; j<i; j++)
+     {
+       float separation = dist(pointsX[i],pointsY[i],pointsX[j],pointsY[j]);
+         if  ((separation < (diameter[i]/2)+20) || (separation<(diameter[j]/2)+20)){
+           collisionsFound=true;
+     }
+  }
+
+  }
+}
+
+void setup() 
+{
+
+  size(1000, 800); 
+  smooth();
+  noStroke();
+  pointsX = new float[numpoints];
+  pointsY = new float[numpoints];
+  diameter = new float[numpoints];
+
+  f = loadFont("HelveticaBold");
+  textFont(f,13);
+  
+  //initialize some random points
+  collisionsFound=true;
+    while (collisionsFound){
+      initializePoints();
+    }  
+      
+      
+}
+
+void draw() 
+{ 
+  background( 51 );
+  cursorX = mouseX;  
+  
+  //here we follow the strategy on processing.org's tutorial for tracking mouse movement
+  float dx = cursorX - x; //change in xposition
+  if(abs(dx) > 1) { 
+    x += dx;               
+  }
+  
+  cursorY = mouseY;
+  float dy = cursorY - y; //change in yposition
+  if(abs(dy) > 1) {
+    y += dy;
+  }
+  
+  
+  morphed=false; //true iff we need a morphed cursor bubble
+  currmin=0; 
+  secondmin=0;
+
+  //compute distances to center, outermost and innermost
+  //sides of all neighbors
+  for (int i=0; i<pointsX.length; i++)
+  {
+    distances[i] = dist(x,y,pointsX[i],pointsY[i]); //distance to centers
+    containDistances[i] = distances[i] + diameter[i]; //distance to contain
+    intersectDistances[i] = distances[i]-(diameter[i]/2); //distance to intersect
+    
+    //find the nearest neighbor
+    if ((intersectDistances[i]< intersectDistances[currmin]))
+    {
+
+      currmin=i;
+    }
+  }
+  
+    cursorDiameter = 2*distances[currmin] + diameter[currmin];
+    
+  //find the second-nearest neighbor, if needed
+  for (int i=0;i<pointsX.length;i++){
+    
+    //check if we intersect the ith point, and if so, if the ith point is smaller
+    if (!regularCursor && (i!= currmin) && (cursorDiameter/2 > intersectDistances[i])){
+      morphed=true;
+      secondmin = i;
+      cursorDiameter = 2*intersectDistances[i];
+    }
+  }
+
+   
+   
+  fill(255,200,200);
+  
+  if (morphed && !regularCursor)
+  {
+    ellipse(pointsX[currmin], pointsY[currmin], diameter[currmin]+10, diameter[currmin]+10 );
+    
+ }
+  if (!regularCursor){
+    ellipse(x, y, cursorDiameter, cursorDiameter);
+  }
+  
+  //draw targets
+  fill(210);
+  for (int i=0;i<pointsX.length;i++){  
+    if (testMode && (i ==currTarget))
+    {
+      fill(100,200,200);
+      ellipse(pointsX[i],pointsY[i],diameter[i],diameter[i]);
+      fill(210);
+    }
+    else{
+      ellipse(pointsX[i],pointsY[i],diameter[i],diameter[i]);
+    }
+
+  }
+ 
+ //write some miscellaneous information to the screen 
+ if (infoOn){
+   fill(210);
+   text("Current target: " + currmin,10,20);
+   text("Cursor radius: " + cursorDiameter/2,10,40);
+   text("i: toggle info",10,700);
+   text("c: toggle cursor",10,720);
+   text("t: toggle timing mode",10,740);
+   text("r: redraw targets",10,760);
+ }
+ if (testMode){
+  text("Hits: "+numHits,10, 100);
+  text("Misses: "+numMisses, 10, 120);
+  text("Average time (ms): "+ (numHits >0 ?(runningTotalTime/numHits): 0),10,140); 
+ } 
+}
+
+
+
+
+
+
