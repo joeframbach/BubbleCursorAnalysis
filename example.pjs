@@ -69,8 +69,8 @@ void mousePressed(){
    {
      timeElapsed = millis()-startTime;
      runningTotalTime += timeElapsed;
-     numHits++;
      movementTimes[numHits] = timeElapsed;
+     numHits++;
      startTest();
    }
    else
