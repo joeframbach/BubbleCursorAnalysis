@@ -1,20 +1,47 @@
 <html>
 <head>
 	<title>Bubble Cursor User Testing</title>
-	<script src="processing-0.9.7.js"></script>
-	<script type="application/javascript">
+	<script type="text/javascript" src="processing-0.9.7.js"></script>
+	<script type="text/javascript">
 		function getip(json){
 			window.ip = json.ip;
-			alert(ip); // alerts the ip address
+		}
+		function submit() {
+			stats = Processing.getInstanceById('canvas').getStats();
+			$('#entry_18').val(ip);
+			$('#entry_13').val(stats[0]);
+			$('#entry_14').val(stats[1]);
+			$('#entry_15').val(stats[2]);
+			$('#entry_16').val(stats[3]);
+			$('#entry_17').val(stats[4]);
+			$('#entry_19').val(stats[5]);
+			$('#entry_20').val(stats[6]);
+			$('#ss-form :submit').click();
 		}
 	</script>
-	<script type="application/javascript" src="http://jsonip.appspot.com/?callback=getip"></script>
+	<script type="text/javascript" src="http://jsonip.appspot.com/?callback=getip"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
-	<canvas datasrc="example.pjs" width="200" height="200"></canvas>
+	<canvas id="canvas" datasrc="example.pjs" width="200" height="200"></canvas>
 	<p>A bubble Cursor, based on the 2005 paper "The bubble cursor: enhancing target acquisition by dynamic resizing of the cursor's activation area" by Grossman and Balakrishnan.</p>
 	<p>If HTML5/Javascript runs slowly in your browser (for example, Firefox 3.X), the application will render slowly.  Try a fully compliant browser, such as Firefox 4, Chrome, or Safari.</p>
 	<p>Original Source credited to <a href="http://ieor.berkeley.edu/~anandk">Anand Kulkarni</a> (anandk [at] berkeley.edu). Modified for user testing by <a href="http://rarlindseysmash.com">Lindsey Bieda</a> (lindsey [at] rarlinsdeysmash.com) and <a href="http://joe.framba.ch">Joe Frambach</a> (joe [at] framba.ch)</p>
+
+<form style="display:none" target="ifr" action="https://spreadsheets.google.com/a/framba.ch/formResponse?hl=en&amp;formkey=dHpjY3dmNGZVcTlHVlZYUDhBYmdEVkE6MA&amp;ifq" method="POST" id="ss-form"> 
+<input type="text" name="entry.18.single" id="entry_18"> 
+<input type="text" name="entry.13.single" id="entry_13"> 
+<input type="text" name="entry.14.single" id="entry_14"> 
+<input type="text" name="entry.15.single" id="entry_15"> 
+<input type="text" name="entry.16.single" id="entry_16"> 
+<input type="text" name="entry.17.single" id="entry_17"> 
+<input type="text" name="entry.19.single" id="entry_19"> 
+<input type="text" name="entry.20.single" id="entry_20"> 
+<input type="hidden" name="pageNumber" value="0"> 
+<input type="hidden" name="backupCache" value=""> 
+<input type="submit" name="submit" value="Submit">
+</form>
+<iframe style="display:none" name="ifr" id="ifr"></iframe>
 </body>
 </html>
 
