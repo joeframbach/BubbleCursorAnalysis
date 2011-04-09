@@ -1,5 +1,3 @@
-/* @pjs font="data/HelveticaBold.ttf"; */
-
 PFont f;                          
 
 int numpoints; //number of points
@@ -113,17 +111,16 @@ void selectTrial() {
   // for all trials the information will not be displayed to the user
   infoOn = false;
   testMode = true;
-  numClicks = 0;
-  numHits = 0;
-  numMisses = 0;
 
   if(trialIndex > 9){
     alert("Thank you for participating. Click [OK] to continue.");
-    // send information 
     window.location = window.location;
   } else {
     trials[trialIndices[trialIndex]]();
     trialIndex++;
+    numClicks = 0;
+    numHits = 0;
+    numMisses = 0;
   }
 }
 
@@ -225,6 +222,8 @@ void shuffle = function(o){ //v1.0
 void draw() 
 { 
   if(numHits == 10){
+    // submit the data for this trial
+    submit();
     selectTrial();  
   }
 
