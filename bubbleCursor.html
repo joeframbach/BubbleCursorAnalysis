@@ -2,6 +2,13 @@
 <head>
 	<title>Bubble Cursor User Testing</title>
 	<script src="processing-0.9.7.js"></script>
+	<script type="application/javascript">
+		function getip(json){
+			window.ip = json.ip;
+			alert(ip); // alerts the ip address
+		}
+	</script>
+	<script type="application/javascript" src="http://jsonip.appspot.com/?callback=getip"></script>
 </head>
 <body>
 	<canvas datasrc="example.pjs" width="200" height="200"></canvas>
