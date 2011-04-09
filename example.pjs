@@ -46,6 +46,11 @@ boolean collisionsFound; //used only in initializing points to prevent overlap
 void keyPressed() {
 }
 
+String[] getStats() {
+  String[] ret =  {padding,rows,cols,diameter[0],regularCursor?"regular":"bubble",join(movementTimes,","),numMisses};
+  return ret;
+}
+
 void startTest(){
   startTime = millis();
   int oldTarget = currTarget;
