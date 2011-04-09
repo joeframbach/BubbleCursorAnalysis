@@ -29,6 +29,9 @@ float timeElapsed=0;
 int trialIndex = 0;
 int[] trialIndices = {0,1,2,3,4,5,6,7,8,9};
 
+int[] movementTimes = new int[10];
+
+
 //booleans to track program mode and bubble behavior
 boolean morphed; //tracks if the bubble needs to be morphed
 boolean regularCursor; //turns off the bubble cursor entirely
@@ -51,13 +54,14 @@ void startTest(){
 void mousePressed(){
   numClicks++;
 
- if (testMode&& !regularCursor)
+ if (testMode)
  {
    if (currmin==currTarget)
    {
      timeElapsed = millis()-startTime;
      runningTotalTime += timeElapsed;
      numHits++;
+     movementTimes[numHits] = timeElapsed;
      startTest();
    }
    else
