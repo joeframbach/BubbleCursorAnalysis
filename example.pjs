@@ -26,10 +26,8 @@ float cursorDiameter;
 float startTime=0;
 float timeElapsed=0;
 
-
-int[] trails = new int[10]; // array that holds the random order of trials
-int trialindex = 0; // identifier for the current trial
-
+int trialIndex = 0;
+int[] trialIndices = {0,1,2,3,4,5,6,7,8,9};
 
 //booleans to track program mode and bubble behavior
 boolean morphed; //tracks if the bubble needs to be morphed
@@ -110,7 +108,6 @@ void initializePoints(x,y,d) { // x cols, y rows, diameter d
     }
     posx += distx;
   }
-
 }
 
 void selectTrial() {
@@ -118,60 +115,90 @@ void selectTrial() {
   infoOn = false;
   testMode = true;
   numClicks = 0;
-  
-  // select the next trial
+  numHits = 0;
+  numMisses = 0;
 
+  if(trialIndex > 9){
+    alert("Thank you for participating. Click [OK] to continue.");
+    // send information 
+    window.location = window.location;
+  } else {
+    trials[trialIndices[trialIndex]]();
+    trialIndex++;
+  }
 }
 
+trials = [
 // Trial one is cursor off
-void initializeTrial1() {
+function() {
   regularCursor = true;
-}
+  padding = 100;
+  initializePoints(5,5,20);
+},
 
 // Trial two is cursor on
-void initializeTrial2() {
+function() {
   regularCursor = false;
-}
+  padding = 100;
+  initializePoints(5,5,20);
+},
 
 // Trial three is cursor off large distance
-void initializeTrial3() {
+function() {
   regularCursor = true;
-}
+  padding = 50;
+  initializePoints(5,5,20);
+},
 
 // Trial four is cursor off small distance
-void initializeTrial4() {
+function() {
   regularCursor = true;
-}
+  padding = 200;
+  initializePoints(5,5,20);
+},
 
 // Trial five is cursor on large distance
-void initializeTrial5() {
+function() {
   regularCursor = false;
-}
+  padding = 50;
+  initializePoints(5,5,20);
+},
 
 // Trial six is cursor on small distance
-void initializeTrial6() {
+function() {
   regularCursor = false;
-}
+  padding = 200;
+  initializePoints(5,5,20);
+},
 
 // Trial seven is cursor off small diameter
-void initializeTrial7() {
+function() {
   regularCursor = true;
-}
+  padding = 100;
+  initializePoints(5,5,15);
+},
 
 // Trial eight is cursor off large diameter
-void initializeTrial8() {
+function() {
   regularCursor = true;
-}
+  padding = 100;
+  initializePoints(5,5,30);
+},
 
 // Trial nine is cursor on small diameter
-void initializeTrial9() {
+function() {
   regularCursor = false;
-}
+  padding = 100;
+  initializePoints(5,5,15);
+},
 
 // Trial ten is cursor on large diameter
-void initializeTrial10() {
+function() {
   regularCursor = false;
+  padding = 100;
+  initializePoints(5,5,30);
 }
+];
 
 void setup() 
 {
@@ -182,14 +209,26 @@ void setup()
 
   f = loadFont("HelveticaBold");
   textFont(f,13);
-  
-  //initialize some points
-  initializePoints(5,5,20);
-      
+
+  trialIndices = shuffle(trialIndices);
+
+  selectTrial();
 }
+
+//+ Jonas Raoni Soares Silva
+//@ http://jsfromhell.com/array/shuffle [v1.0]
+void shuffle = function(o){ //v1.0
+  for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+  return o;
+};
+
 
 void draw() 
 { 
+  if(numHits == 10){
+    selectTrial();  
+  }
+
   background( 51 );
   cursorX = mouseX;  
   
