@@ -4,6 +4,7 @@ int numpoints; //number of points
 int width = 600;
 int height = 600;
 int padding = 100;
+int clicks = 11;
 int currmin = 0; //tracks index of nearest target
 int secondmin = 0; //tracks index of second-nearest target
 int currTarget = 0; //tracks index of target to click in test mode
@@ -30,7 +31,7 @@ float timeElapsed=0;
 int trialIndex = 0;
 int[] trialIndices = {0,1,2,3,4,5,6,7,8,9};
 
-int[] movementTimes = new int[10];
+int[] movementTimes = new int[clicks-1];
 
 
 //booleans to track program mode and bubble behavior
@@ -67,7 +68,8 @@ void mousePressed(){
    {
      timeElapsed = millis()-startTime;
      runningTotalTime += timeElapsed;
-     movementTimes[numHits] = timeElapsed;
+     if (numHits>0)
+       movementTimes[numHits-1] = timeElapsed;
      numHits++;
      startTest();
    }
@@ -221,7 +223,7 @@ void shuffle = function(o){ //v1.0
 
 void draw() 
 { 
-  if(numHits == 10){
+  if(numHits == clicks){
     // submit the data for this trial
     submit();
     selectTrial();  
