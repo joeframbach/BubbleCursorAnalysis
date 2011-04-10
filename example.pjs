@@ -6,9 +6,10 @@ int numpoints=30; //number of points
 int currmin = 0; //tracks index of nearest target
 int secondmin = 0; //tracks index of second-nearest target
 int currTarget = 0; //tracks index of target to click in test mode
-int numHits=0;
-int numMisses=0;
-int runningTotalTime=0;
+int numHits = 0;
+int numMisses = 0;
+int runningTotalTime = 0;
+int numClicks = 0;
 
 //floats and float arrays to handle position, movement, timing
 float x, y;              //old cursor position
@@ -23,6 +24,10 @@ float startTime=0;
 float timeElapsed=0;
 
 
+int[] trails = new int[10]; // array that holds the random order of trials
+int trialindex = 0; // identifier for the current trial
+
+
 //booleans to track program mode and bubble behavior
 boolean morphed; //tracks if the bubble needs to be morphed
 boolean regularCursor; //turns off the bubble cursor entirely
@@ -31,25 +36,6 @@ boolean infoOn=true; //displays useful information, deactivate with "i"
 boolean collisionsFound; //used only in initializing points to prevent overlap
 
 void keyPressed() {
-  if (key == 'c') {
-    regularCursor =! regularCursor;
-  } 
-  else if (key == 't') 
-  {
-    testMode = !testMode;
-    numHits=0;
-    numMisses=0;
-    runningTotalTime=0;
-    startTest();
-  }
-  else if (key == 'i'){
-    infoOn=!infoOn;
-  }
-  else if (key == 'r')
-  {
-    setup();
-  }
-
 }
 
 void startTest(){
@@ -62,6 +48,8 @@ void startTest(){
 
 
 void mousePressed(){
+  numClicks++;
+
  if (testMode&& !regularCursor)
  {
    if (currmin==currTarget)
@@ -111,6 +99,67 @@ void initializePoints(){
   }
 
   }
+
+}
+
+void selectTrial() {
+  // for all trials the information will not be displayed to the user
+  infoOn = false;
+  testMode = true;
+  numClicks = 0;
+  
+  // select the next trial
+
+}
+
+// Trial one is cursor off
+void initializeTrial1() {
+  regularCursor = true;
+}
+
+// Trial two is cursor on
+void initializeTrial2() {
+  regularCursor = false;
+}
+
+// Trial three is cursor off large distance
+void initializeTrial3() {
+  regularCursor = true;
+}
+
+// Trial four is cursor off small distance
+void initializeTrial4() {
+  regularCursor = true;
+}
+
+// Trial five is cursor on large distance
+void initializeTrial5() {
+  regularCursor = false;
+}
+
+// Trial six is cursor on small distance
+void initializeTrial6() {
+  regularCursor = false;
+}
+
+// Trial seven is cursor off small diameter
+void initializeTrial7() {
+  regularCursor = true;
+}
+
+// Trial eight is cursor off large diameter
+void initializeTrial8() {
+  regularCursor = true;
+}
+
+// Trial nine is cursor on small diameter
+void initializeTrial9() {
+  regularCursor = false;
+}
+
+// Trial ten is cursor on large diameter
+void initializeTrial10() {
+  regularCursor = false;
 }
 
 void setup() 
@@ -212,22 +261,6 @@ void draw()
     }
 
   }
- 
- //write some miscellaneous information to the screen 
- if (infoOn){
-   fill(210);
-   text("Current target: " + currmin,10,20);
-   text("Cursor radius: " + cursorDiameter/2,10,40);
-   text("i: toggle info",10,700);
-   text("c: toggle cursor",10,720);
-   text("t: toggle timing mode",10,740);
-   text("r: redraw targets",10,760);
- }
- if (testMode){
-  text("Hits: "+numHits,10, 100);
-  text("Misses: "+numMisses, 10, 120);
-  text("Average time (ms): "+ (numHits >0 ?(runningTotalTime/numHits): 0),10,140); 
- } 
 }
 
 
