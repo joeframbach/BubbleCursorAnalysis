@@ -2,7 +2,10 @@
 
 PFont f;                          
 
-int numpoints=30; //number of points
+int numpoints; //number of points
+int width = 600;
+int height = 600;
+int padding = 100;
 int currmin = 0; //tracks index of nearest target
 int secondmin = 0; //tracks index of second-nearest target
 int currTarget = 0; //tracks index of target to click in test mode
@@ -16,9 +19,9 @@ float x, y;              //old cursor position
 float cursorX, cursorY;  //cursor position
 float[] pointsX, pointsY;
 float[] diameter;
-float[] containDistances = new float[numpoints];
-float[] intersectDistances = new float[numpoints];
-float[] distances = new float[numpoints];
+float[] containDistances;
+float[] intersectDistances;
+float[] distances;
 float cursorDiameter;
 float startTime=0;
 float timeElapsed=0;
@@ -82,22 +85,30 @@ void mousePressed(){
  
 }
 
-void initializePoints(){
-  for (int i =0;i<numpoints;i++){     
-        pointsX[i]= random(240,960);
-        pointsY[i]= random(40,760);
-        diameter[i]= random(10,60);
-      }
-  collisionsFound=false;
-  for (int i=0;i<numpoints;i++){
-     for (int j=0; j<i; j++)
-     {
-       float separation = dist(pointsX[i],pointsY[i],pointsX[j],pointsY[j]);
-         if  ((separation < (diameter[i]/2)+20) || (separation<(diameter[j]/2)+20)){
-           collisionsFound=true;
-     }
-  }
+void initializePoints(x,y,d) { // x cols, y rows, diameter d
+  var posx, posy,
+      distx = (width - 2*padding)/(x-1),
+      disty = (height - 2*padding)/(y-1);
 
+  numpoints = x*y;
+  pointsX = new float[numpoints];
+  pointsY = new float[numpoints];
+  diameter = new float[numpoints];
+  containDistances = new float[numpoints];
+  intersectDistances = new float[numpoints];
+  distances = new float[numpoints];
+
+
+  posx = padding;
+  for (int i=0; i<x; i++) {
+    posy = padding;
+    for (int j=0; j<y; j++) {
+      pointsX[i*x+j]= posx;
+      pointsY[i*x+j]= posy;
+      diameter[i*x+j]= d;
+      posy += disty;
+    }
+    posx += distx;
   }
 
 }
@@ -165,22 +176,15 @@ void initializeTrial10() {
 void setup() 
 {
 
-  size(1000, 800); 
+  size(600, 600); 
   smooth();
   noStroke();
-  pointsX = new float[numpoints];
-  pointsY = new float[numpoints];
-  diameter = new float[numpoints];
 
   f = loadFont("HelveticaBold");
   textFont(f,13);
   
-  //initialize some random points
-  collisionsFound=true;
-    while (collisionsFound){
-      initializePoints();
-    }  
-      
+  //initialize some points
+  initializePoints(5,5,20);
       
 }
 
